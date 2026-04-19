@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "ADR Shield AI"
+version = "1.0.0"
+id = "artifacts/adr-shield"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 20877
+
+[services.development]
+run = "pnpm --filter @workspace/adr-shield run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/adr-shield", "run", "build" ]
+publicDir = "artifacts/adr-shield/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "20877"
+BASE_PATH = "/"
