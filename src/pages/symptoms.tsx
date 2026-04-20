@@ -4,11 +4,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Activity, X, Plus, AlertCircle, AlertTriangle, Brain, Info, Camera, Image as ImageIcon, MessageSquare, Loader2, Sparkles } from "lucide-react";
+import { Activity, X, Plus, AlertCircle, AlertTriangle, Brain, Info, Camera, Image as ImageIcon, MessageSquare, Loader2, Sparkles, ArrowLeft } from "lucide-react";
 import { MedicalDisclaimer } from "@/components/disclaimer";
 import { SeverityBadge } from "@/components/severity-badge";
+import { useI18n } from "@/lib/i18n";
+import { Link } from "wouter";
 
 export default function SymptomsPredictor() {
+  const { t } = useI18n();
   const [mode, setMode] = useState<"text" | "photo">("text");
   
   // Text Mode State
@@ -64,85 +67,95 @@ export default function SymptomsPredictor() {
   const currentResult = mode === "text" ? predictDisease.data : analyzeSkin.data;
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-700 max-w-6xl mx-auto">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900">What is my illness?</h1>
-        <p className="text-slate-500 mt-1">Tell us how you feel or show us a photo, and our AI will help find what might be wrong.</p>
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 max-w-6xl mx-auto pb-20">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">{t("disease")}</h1>
+          <p className="text-slate-500 font-medium">{t("diseaseDesc")}</p>
+        </div>
+        <Button variant="outline" asChild className="rounded-full self-start">
+          <Link href="/">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            {t("back")}
+          </Link>
+        </Button>
       </div>
 
-      <MedicalDisclaimer />
+      <div className="px-1">
+        <MedicalDisclaimer />
+      </div>
 
-      {/* Mode Toggle */}
-      <div className="flex p-1 bg-slate-100 rounded-2xl w-fit mx-auto mb-4 border border-slate-200">
+      {/* Mode Toggle - Integrated Translation for Mode Labels */}
+      <div className="flex p-2 bg-slate-100 rounded-[2rem] w-full max-w-lg mx-auto mb-8 border border-slate-200">
         <button
           onClick={() => setMode("text")}
-          className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 font-bold ${
-            mode === "text" ? "bg-white text-primary shadow-sm scale-105" : "text-slate-500 hover:text-slate-900"
+          className={`flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-[1.5rem] transition-all duration-300 font-bold text-lg ${
+            mode === "text" ? "bg-white text-primary shadow-lg scale-[1.02]" : "text-slate-500 hover:text-slate-900 hover:bg-white/50"
           }`}
         >
-          <MessageSquare className="h-5 w-5" />
-          <span>Describe with Words</span>
+          <MessageSquare className="h-6 w-6" />
+          <span>{mode === "text" ? (t("language") === "hi" ? "बोलकर बताएं" : "With Words") : "Words"}</span>
         </button>
         <button
           onClick={() => setMode("photo")}
-          className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-300 font-bold ${
-            mode === "photo" ? "bg-white text-primary shadow-sm scale-105" : "text-slate-500 hover:text-slate-900"
+          className={`flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-[1.5rem] transition-all duration-300 font-bold text-lg ${
+            mode === "photo" ? "bg-white text-primary shadow-lg scale-[1.02]" : "text-slate-500 hover:text-slate-900 hover:bg-white/50"
           }`}
         >
-          <Camera className="h-5 w-5" />
-          <span>Show with Photo</span>
+          <Camera className="h-6 w-6" />
+          <span>{mode === "photo" ? (t("language") === "hi" ? "फोटो दिखाएं" : "With Photo") : "Photo"}</span>
         </button>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-12">
+      <div className="grid gap-8 md:grid-cols-12">
         {/* Left Side: Input */}
-        <Card className="md:col-span-5 shadow-lg border-0 rounded-[2rem] overflow-hidden bg-white/80 backdrop-blur-sm self-start">
-          <CardHeader className="pb-4">
-            <CardTitle>{mode === "text" ? "Describe Symptoms" : "Upload Skin Photo"}</CardTitle>
-            <CardDescription>
+        <Card className="md:col-span-5 shadow-xl border-0 rounded-[2.5rem] overflow-hidden bg-white self-start">
+          <CardHeader className="p-8 bg-slate-50/50">
+            <CardTitle className="text-2xl font-bold">{mode === "text" ? "Describe Symptoms" : "Upload Skin Photo"}</CardTitle>
+            <CardDescription className="text-slate-500 font-medium">
               {mode === "text" 
                 ? "Enter how you feel and your context." 
                 : "Take a clear, bright photo of the skin area."}
             </CardDescription>
           </CardHeader>
           
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-8 p-8">
             {mode === "text" ? (
               <>
-                <div className="space-y-2">
-                  <Label>How old are you? (Optional)</Label>
+                <div className="space-y-3">
+                  <Label className="text-lg font-bold text-slate-800">How old are you?</Label>
                   <Input 
                     type="number" 
                     placeholder="e.g. 45" 
                     value={patientAge}
                     onChange={(e) => setPatientAge(e.target.value)}
-                    className="h-12 bg-slate-50/50"
+                    className="h-14 bg-slate-100/50 rounded-2xl border-transparent focus-visible:ring-primary text-lg px-6"
                   />
                 </div>
 
-                <div className="space-y-3">
-                  <Label>What symptoms do you have?</Label>
+                <div className="space-y-4">
+                  <Label className="text-lg font-bold text-slate-800">What symptoms do you have?</Label>
                   <div className="flex gap-2">
                     <Input 
                       placeholder="e.g. headache, fever..." 
                       value={symptomInput}
                       onChange={(e) => setSymptomInput(e.target.value)}
                       onKeyDown={handleAddSymptom}
-                      className="h-12 bg-slate-50/50"
+                      className="h-14 bg-slate-100/50 rounded-2xl border-transparent focus-visible:ring-primary text-lg px-6 flex-1"
                     />
                     <Button variant="secondary" onClick={() => {
                         if (symptomInput.trim() && !symptoms.includes(symptomInput.trim())) {
                           setSymptoms([...symptoms, symptomInput.trim()]);
                           setSymptomInput("");
                         }
-                    }} className="h-12">Add</Button>
+                    }} className="h-14 rounded-2xl px-6 font-bold">Add</Button>
                   </div>
                   {symptoms.length > 0 && (
                     <div className="flex flex-wrap gap-2 pt-2">
                       {symptoms.map((s, i) => (
-                        <div key={i} className="flex items-center gap-1 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-sm font-bold animate-in bounce-in">
+                        <div key={i} className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-2xl text-base font-bold shadow-md shadow-primary/20 animate-in bounce-in">
                           {s}
-                          <button onClick={() => setSymptoms(symptoms.filter(x => x !== s))}><X className="h-3 w-3" /></button>
+                          <button onClick={() => setSymptoms(symptoms.filter(x => x !== s))} className="bg-white/20 hover:bg-white/40 rounded-full p-1"><X className="h-4 w-4" /></button>
                         </div>
                       ))}
                     </div>
@@ -163,28 +176,28 @@ export default function SymptomsPredictor() {
                 {!selectedImage ? (
                   <div 
                     onClick={() => fileInputRef.current?.click()}
-                    className="aspect-square rounded-3xl border-2 border-dashed border-slate-300 bg-slate-50 flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-all group"
+                    className="aspect-square rounded-[2rem] border-2 border-dashed border-slate-300 bg-slate-50 flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-all group p-10"
                   >
-                    <div className="p-4 bg-white rounded-full shadow-sm group-hover:scale-110 transition-transform mb-4">
-                      <Camera className="h-8 w-8 text-primary" />
+                    <div className="p-6 bg-white rounded-3xl shadow-xl shadow-black/5 group-hover:scale-110 transition-transform mb-6">
+                      <Camera className="h-10 w-10 text-primary" />
                     </div>
-                    <p className="font-bold text-slate-700">Click to Take or Pick Photo</p>
-                    <p className="text-sm text-slate-500 mt-1">Camera or Gallery</p>
+                    <p className="text-xl font-bold text-slate-700">Tap to Take Photo</p>
+                    <p className="text-slate-400 font-medium mt-1">Camera or Gallery</p>
                   </div>
                 ) : (
-                  <div className="relative aspect-square rounded-3xl overflow-hidden group border-2 border-primary/20 shadow-inner">
+                  <div className="relative aspect-square rounded-[2rem] overflow-hidden group border-2 border-primary/20 shadow-2xl">
                     <img src={selectedImage} alt="Preview" className="w-full h-full object-cover" />
                     <button 
                       onClick={() => setSelectedImage(null)}
-                      className="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition-colors"
+                      className="absolute top-4 right-4 bg-black/60 text-white p-3 rounded-full hover:bg-black/80 backdrop-blur-md transition-colors"
                     >
-                      <X className="h-5 w-5" />
+                      <X className="h-6 w-6" />
                     </button>
                     {isScanning && (
                       <div className="absolute inset-0 bg-primary/20 backdrop-blur-[2px] flex flex-col items-center justify-center space-y-4">
-                        <div className="h-1 w-full bg-primary/40 absolute top-0 animate-scan pointer-events-none" />
-                        <Sparkles className="h-12 w-12 text-white animate-pulse" />
-                        <p className="text-white font-black text-xl drop-shadow-md">Scanning Skin...</p>
+                        <div className="h-1.5 w-full bg-white/50 absolute top-0 animate-scan pointer-events-none shadow-[0_0_20px_white]" />
+                        <Sparkles className="h-16 w-16 text-white animate-pulse" />
+                        <p className="text-white font-black text-2xl drop-shadow-lg italic">Checking Skin Layers...</p>
                       </div>
                     )}
                   </div>
@@ -193,23 +206,23 @@ export default function SymptomsPredictor() {
             )}
           </CardContent>
           
-          <CardFooter>
+          <CardFooter className="p-8 pt-0">
             {mode === "text" ? (
               <Button 
-                className="w-full h-14 rounded-2xl text-lg font-bold shadow-lg shadow-primary/20" 
+                className="w-full h-16 rounded-2xl text-xl font-bold shadow-xl shadow-primary/20 hover:scale-[1.01] transition-transform" 
                 onClick={handlePredict} 
                 disabled={symptoms.length === 0 || isPredicting}
               >
-                {isPredicting ? <Loader2 className="animate-spin h-6 w-6 mr-2" /> : <Brain className="h-6 w-6 mr-2" />}
+                {isPredicting ? <Loader2 className="animate-spin h-7 w-7 mr-3" /> : <Brain className="h-7 w-7 mr-3" />}
                 Analyze Symptoms
               </Button>
             ) : (
               <Button 
-                className="w-full h-14 rounded-2xl text-lg font-bold shadow-lg shadow-primary/20" 
+                className="w-full h-16 rounded-2xl text-xl font-bold shadow-xl shadow-primary/20 hover:scale-[1.01] transition-transform" 
                 onClick={handleStartScan} 
                 disabled={!selectedImage || isScanning}
               >
-                {isScanning ? <Loader2 className="animate-spin h-6 w-6 mr-2" /> : <Sparkles className="h-6 w-6 mr-2" />}
+                {isScanning ? <Loader2 className="animate-spin h-7 w-7 mr-3" /> : <Sparkles className="h-7 w-7 mr-3" />}
                 Scan Profile
               </Button>
             )}
@@ -217,87 +230,89 @@ export default function SymptomsPredictor() {
         </Card>
 
         {/* Right Side: Results */}
-        <div className="md:col-span-7 space-y-6">
+        <div className="md:col-span-7 space-y-8">
           {(isPredicting || isScanning) ? (
-            <Card className="shadow-lg border-0 rounded-[2rem] bg-white text-center py-20 px-8">
-              <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 relative">
-                 <Loader2 className="h-10 w-10 text-primary animate-spin" />
-                 <Sparkles className="absolute top-0 right-0 h-4 w-4 text-primary animate-pulse" />
-              </div>
-              <h3 className="text-2xl font-bold text-slate-900 mb-2">
+            <Card className="shadow-xl border-0 rounded-[3rem] bg-white text-center py-32 px-12 relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-[100px] pointer-events-none" />
+               <div className="w-24 h-24 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-8 relative z-10">
+                  <Loader2 className="h-12 w-12 text-primary animate-spin" />
+               </div>
+              <h3 className="text-3xl font-black text-slate-900 mb-2 relative z-10 italic">
                 {isScanning ? "AI Deep Scan in Progress" : "Processing Your Data"}
               </h3>
-              <p className="text-slate-500 max-w-sm mx-auto">
-                Please wait a moment while our machine learning model analyzes your inputs.
+              <p className="text-xl text-slate-400 max-w-sm mx-auto font-medium leading-relaxed relative z-10">
+                Please wait while our machine learning model analyzes your inputs.
               </p>
             </Card>
           ) : currentResult ? (
-            <div className="space-y-4 animate-in slide-in-from-bottom duration-500">
-               <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-black text-slate-900">What we found</h2>
+            <div className="space-y-6 animate-in slide-in-from-right duration-500">
+               <div className="flex items-center justify-between px-2">
+                  <h2 className="text-3xl font-black text-slate-900 tracking-tight">AI Findings</h2>
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-3 py-1 rounded-full">AI Analysis</span>
-                    <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">Verified</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-4 py-2 rounded-full">AI Analysis</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600 bg-emerald-50 px-4 py-2 rounded-full">Verified</span>
                   </div>
                </div>
 
                {currentResult.predictions.map((p: any, i: number) => (
-                 <Card key={i} className="border-0 shadow-xl rounded-[2.5rem] overflow-hidden bg-white border-t-8 border-t-orange-500">
-                    <CardHeader className="pb-4">
-                       <div className="flex items-start justify-between mb-4">
-                          <div>
-                             <CardTitle className="text-3xl font-black text-slate-900 leading-tight">{p.disease}</CardTitle>
-                             <div className="flex items-center gap-2 mt-1">
-                                <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-md ${
+                 <Card key={i} className="border-0 shadow-xl rounded-[3rem] overflow-hidden bg-white border-t-8 border-t-orange-500">
+                    <CardHeader className="p-10 pb-6 bg-slate-50/30">
+                       <div className="flex items-start justify-between gap-6 mb-6">
+                          <div className="flex-1">
+                             <CardTitle className="text-4xl font-black text-slate-900 leading-tight italic">{p.disease}</CardTitle>
+                             <div className="flex items-center gap-3 mt-3">
+                                <span className={`text-[12px] font-black uppercase tracking-widest px-4 py-1.5 rounded-xl ${
                                   p.urgencyLevel === 'low' ? 'bg-emerald-100 text-emerald-700' : 
                                   p.urgencyLevel === 'medium' ? 'bg-orange-100 text-orange-700' : 'bg-red-100 text-red-700'
                                 }`}>
-                                   {p.urgencyLevel}
+                                   Urgency: {p.urgencyLevel}
                                 </span>
                              </div>
                           </div>
-                          <div className="text-right">
-                             <p className="text-[10px] font-black uppercase text-slate-400 tracking-tighter">Confidence</p>
-                             <p className="text-3xl font-black text-primary">{(p.confidence * 100).toFixed(0)}%</p>
+                          <div className="text-right shrink-0">
+                             <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">Confidence</p>
+                             <p className="text-4xl font-black text-primary">{(p.confidence * 100).toFixed(0)}%</p>
                           </div>
                        </div>
                        
-                       {/* Model Stats Strip */}
-                       <div className="grid grid-cols-3 gap-2 py-3 border-y border-slate-50">
+                       <div className="grid grid-cols-3 gap-4 py-4 border-y border-slate-100">
                           <div className="text-center">
-                             <p className="text-[8px] font-black text-slate-400 uppercase">Tissue Scan</p>
-                             <p className="text-xs font-bold text-slate-700">Deep Layer 4</p>
+                             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Protocol</p>
+                             <p className="text-sm font-bold text-slate-800">DeepLayer4</p>
                           </div>
-                          <div className="text-center border-x border-slate-50">
-                             <p className="text-[8px] font-black text-slate-400 uppercase">Consistency</p>
-                             <p className="text-xs font-bold text-slate-700">High Match</p>
+                          <div className="text-center border-x border-slate-100">
+                             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Consistency</p>
+                             <p className="text-sm font-bold text-slate-800">High Match</p>
                           </div>
                           <div className="text-center">
-                             <p className="text-[8px] font-black text-slate-400 uppercase">History Check</p>
-                             <p className="text-xs font-bold text-slate-700">Clean</p>
+                             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Analysis</p>
+                             <p className="text-sm font-bold text-slate-800">Clean</p>
                           </div>
                        </div>
                     </CardHeader>
-                  <CardContent className="pt-6 space-y-6">
-                    <div className="space-y-4 leading-relaxed">
-                       <p className="text-slate-700 font-medium text-lg leading-relaxed">{p.description}</p>
+                  <CardContent className="p-10 pt-8 space-y-8">
+                    <div className="space-y-6 leading-relaxed">
+                       <p className="text-slate-600 font-medium text-xl leading-relaxed">{p.description}</p>
                        
-                       <div className="bg-primary/5 rounded-[1.5rem] p-6 border border-primary/10">
-                         <div className="flex items-center gap-2 mb-3">
-                           <div className="p-2 bg-white rounded-lg shadow-sm">
-                             <Plus className="h-4 w-4 text-primary font-black" />
+                       <div className="bg-primary/5 rounded-[2.5rem] p-8 border border-primary/10 relative overflow-hidden">
+                         <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-3xl rounded-full" />
+                         <div className="flex items-center gap-4 mb-4 relative z-10">
+                           <div className="p-3 bg-white rounded-2xl shadow-md">
+                             <Plus className="h-6 w-6 text-primary font-black" />
                            </div>
-                           <h4 className="text-sm font-black uppercase tracking-widest text-primary">Simple Step to Follow</h4>
+                           <h4 className="text-sm font-black uppercase tracking-widest text-primary">Step to Follow</h4>
                          </div>
-                         <p className="text-slate-800 font-bold text-lg">{p.recommendedAction}</p>
+                         <p className="text-slate-900 font-black text-2xl relative z-10 leading-tight italic">{p.recommendedAction}</p>
                        </div>
 
                        {p.medicationConflicts?.length > 0 && (
-                        <div className="flex items-start gap-4 bg-red-50 p-6 rounded-[1.5rem] border border-red-100">
-                          <AlertTriangle className="h-6 w-6 text-red-600 shrink-0 mt-1" />
-                          <div className="space-y-1">
-                            <span className="font-black text-red-900 uppercase text-xs tracking-widest block">Medicine Warning</span>
-                            <p className="text-red-800 font-bold leading-tight">{p.medicationConflicts.join(", ")}</p>
+                        <div className="flex items-start gap-5 bg-red-50 p-8 rounded-[2.5rem] border border-red-100">
+                          <div className="p-3 bg-red-600 rounded-2xl shadow-lg shadow-red-200 shrink-0">
+                            <AlertTriangle className="h-6 w-6 text-white" />
+                          </div>
+                          <div className="space-y-2">
+                            <span className="font-black text-red-900 uppercase text-xs tracking-widest block">Important Disclaimer</span>
+                            <p className="text-red-800 font-bold text-lg leading-tight">{p.medicationConflicts.join(", ")}</p>
                           </div>
                         </div>
                        )}
@@ -307,13 +322,16 @@ export default function SymptomsPredictor() {
               ))}
             </div>
           ) : (
-            <div className="h-full min-h-[500px] flex flex-col items-center justify-center text-center p-12 bg-white/50 border-2 border-dashed border-slate-200 rounded-[2.5rem] transition-all">
-              <div className="w-24 h-24 bg-slate-100 rounded-[2rem] flex items-center justify-center mb-6">
-                <Brain className="h-12 w-12 text-slate-300" />
-              </div>
-              <h3 className="text-2xl font-black text-slate-800 mb-2">Ready to Start?</h3>
-              <p className="text-slate-500 max-w-sm mx-auto font-medium">
-                Pick a way on the left to tell us about your health problem.
+            <div className="h-full min-h-[600px] flex flex-col items-center justify-center text-center p-12 bg-white rounded-[3.5rem] border-2 border-dashed border-slate-100 shadow-inner">
+               <div className="relative mb-10">
+                  <div className="absolute inset-0 bg-slate-100 blur-3xl opacity-40 rounded-full" />
+                  <div className="w-32 h-32 bg-white rounded-[2.5rem] shadow-xl flex items-center justify-center relative z-10 border border-slate-50 transition-transform hover:scale-105">
+                    <Brain className="h-16 w-16 text-slate-200" />
+                  </div>
+               </div>
+              <h3 className="text-3xl font-black text-slate-800 mb-4 tracking-tight italic">AI Ready to Analyze</h3>
+              <p className="text-xl text-slate-400 max-w-sm mx-auto font-medium leading-relaxed">
+                Choose an input method on the left to start your health profile scan.
               </p>
             </div>
           )}

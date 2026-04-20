@@ -4,7 +4,7 @@ import { useParams, Link } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Pill, ArrowLeft, ShieldAlert, CheckCircle2, AlertTriangle, Info } from "lucide-react";
+import { Pill, ArrowLeft, CheckCircle2, Info } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MedicalDisclaimer } from "@/components/disclaimer";
 
@@ -68,63 +68,24 @@ export default function DrugDetail() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="shadow-sm border-l-4 border-l-emerald-500">
+      <div className="grid gap-6 md:grid-cols-1">
+        <Card className="shadow-sm border-l-4 border-l-emerald-500 max-w-4xl mx-auto w-full">
           <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <CheckCircle2 className="h-5 w-5 text-emerald-500" />
-              Indications
+            <CardTitle className="flex items-center gap-2 text-2xl font-bold">
+              <CheckCircle2 className="h-6 w-6 text-emerald-500" />
+              What is this for?
             </CardTitle>
-            <CardDescription>Approved uses for this medication</CardDescription>
+            <CardDescription className="text-base text-slate-600">Common uses and benefits of this medicine</CardDescription>
           </CardHeader>
           <CardContent>
-            <ul className="space-y-2">
-              {drug.indications.map((ind, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
+            <ul className="space-y-4 pt-2">
+              {drug.indications.map((ind: string, i: number) => (
+                <li key={i} className="flex items-start gap-4 text-lg text-slate-800 font-medium bg-emerald-50/50 p-4 rounded-2xl">
+                  <span className="h-3 w-3 rounded-full bg-emerald-500 mt-2 shrink-0" />
                   <span>{ind}</span>
                 </li>
               ))}
             </ul>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-sm border-l-4 border-l-red-500">
-          <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <ShieldAlert className="h-5 w-5 text-red-500" />
-              Contraindications
-            </CardTitle>
-            <CardDescription>Situations where drug should not be used</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-2">
-              {drug.contraindications.map((contra, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
-                  <span className="h-1.5 w-1.5 rounded-full bg-red-500 mt-1.5 shrink-0" />
-                  <span>{contra}</span>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-sm border-l-4 border-l-amber-500 md:col-span-2 lg:col-span-1">
-          <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <AlertTriangle className="h-5 w-5 text-amber-500" />
-              Side Effects
-            </CardTitle>
-            <CardDescription>Known adverse reactions</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-2">
-              {drug.sideEffects.map((effect, i) => (
-                <Badge key={i} variant="outline" className="bg-amber-50 text-amber-800 border-amber-200">
-                  {effect}
-                </Badge>
-              ))}
-            </div>
           </CardContent>
         </Card>
       </div>
